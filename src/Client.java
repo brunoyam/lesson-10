@@ -12,7 +12,21 @@ public class Client {
              BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))
         ) {
             String s = "";
-
+            Thread readThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        while (true) {
+                            System.out.println(input.readUTF());
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            if (!readThread.isAlive()) {
+                readThread.start();
+            }
             while ((s = reader.readLine()) != null) {
 
                 if ("!quit".equals(s)) {
@@ -21,9 +35,6 @@ public class Client {
                     output.writeUTF(s);
                     output.flush();
                 }
-
-                String answer = input.readUTF();
-                System.out.println(answer);
             }
         } catch (IOException e) {
             e.printStackTrace();
